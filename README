@@ -2,10 +2,10 @@ Basic game using Blender + Unity3D engine.
 
 NOTES:
 * Motion capture provided by UFSC.DesignLab[1] for educational purposes;
-* Heracross textures provided by ROEStudios[3], with .blend model based on the
+* Heracross textures provided by ROEStudios[2], with .blend model based on the
 basic implementation provided by them.
 
 Pokémon is Copyright Gamefreak, Nintendo and The Pokémon Company 2001-2017
 
 [1] https://www.facebook.com/UFSC.Designlab/
-[3] http://roestudios.co.uk/project/3d-pokemon-models/
+[2] http://roestudios.co.uk/project/3d-pokemon-models/
