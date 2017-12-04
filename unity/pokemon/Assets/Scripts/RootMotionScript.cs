@@ -9,7 +9,7 @@ public class RootMotionScript : MonoBehaviour {
                               
         if (animator) {
             Vector3 newPosition = transform.position;
-            newPosition.z += animator.GetFloat(0) * Time.deltaTime; 
+            newPosition.z += 0f * Time.deltaTime; 
             transform.position = newPosition;
         }
     }

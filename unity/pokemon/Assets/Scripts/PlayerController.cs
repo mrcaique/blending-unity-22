@@ -35,8 +35,8 @@ public class PlayerController : MonoBehaviour {
     }
     
     void SetPokecountText(int count) {
-        pokecountText.text = "Pokéballs: " + count.ToString() + "/12";
-        if (count >= 12) {
+        pokecountText.text = "Pokéballs: " + count.ToString() + "/25";
+        if (count >= 25) {
             winText.text = "You Win!";
         }
     }
