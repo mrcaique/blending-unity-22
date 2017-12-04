@@ -11,12 +11,15 @@ public class PlayerController : MonoBehaviour {
     public float gravityScale;
     public Text pokecountText;
     public Text winText;
+    public Animator anime;
+    public Transform pivot;
+    public float rotateSpeed;
+    public GameObject heracrossModel;
 
     private Vector3 moveDirection;
     private int pokeballs;
 
     void Start() {
-        //rb = GetComponent<Rigidbody>();
         controller = GetComponent<CharacterController>();
         pokeballs = 0;
         SetPokecountText(pokeballs);
@@ -32,24 +35,13 @@ public class PlayerController : MonoBehaviour {
     }
     
     void SetPokecountText(int count) {
-        pokecountText.text = "Pokéballs: " + count.ToString();
-        if (count >= 11) {
+        pokecountText.text = "Pokéballs: " + count.ToString() + "/12";
+        if (count >= 12) {
             winText.text = "You Win!";
         }
     }
 
     void Update() {
-        //float moveX = Input.GetAxis("Horizontal") * moveSpeed;
-        //float moveY = moveDirection.y;
-        //float moveZ = Input.GetAxis("Vertical") * moveSpeed;
-
-        //rb.velocity = new Vector3(moveX, moveY, moveZ);
-
-        // by default, jump is "space"
-        //if (Input.GetButtonDown("Jump")) {
-            //rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z); 
-        //}
-        //moveDirection = new Vector3(moveX, moveY, moveZ);
         float yStore = moveDirection.y;
         Vector3 t1 = transform.forward * Input.GetAxis("Vertical");
         Vector3 t2 = transform.right * Input.GetAxis("Horizontal");
@@ -67,47 +59,28 @@ public class PlayerController : MonoBehaviour {
         }
 
         float physics = Physics.gravity.y * gravityScale * Time.deltaTime;
+        float absVertical = Mathf.Abs(Input.GetAxis("Vertical"));
+        float absHorizontal = Mathf.Abs(Input.GetAxis("Horizontal"));
+
         moveDirection.y = moveDirection.y + physics;
         controller.Move(moveDirection * Time.deltaTime);
-    }
 
-    
-    /*  
- *  public float speed;
-    public Text countText;
-    public Text winText;
-    private Rigidbody rb; //! Holds the physics of the sphere
-    private int count;
+        // Move player in different directions based on camera direction
+        if (Input.GetAxis("Horizontal") != 0 ||
+            Input.GetAxis("Vertical") != 0) {
+            transform.rotation = Quaternion.Euler(
+                    0f,
+                    pivot.rotation.eulerAngles.y,
+                    0f);
+            Quaternion newRotation = Quaternion.LookRotation(new
+                    Vector3(moveDirection.x, 0f, moveDirection.z));
 
-    void Start() {
-        rb = GetComponent<Rigidbody>();
-        count = 0;
-        SetCountText(count);
-        winText.text = "";
-    }
-
-    // physics codes
-    void FixedUpdate() {
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        float moveVertical = Input.GetAxis("Vertical");
-
-        Vector3 moviment = new Vector3(moveHorizontal, 0.0f, moveVertical);
-
-        rb.AddForce(moviment * speed);
-    }
-
-    void OnTriggerEnter(Collider other) {
-        if (other.gameObject.CompareTag("Pick Up")) {
-            other.gameObject.SetActive(false);
-            count++;
-            SetCountText(count);
-        } 
-    }
-    
-    void SetCountText(int count) {
-        countText.text = "Count: " + count.ToString();
-        if (count >= 11) {
-            winText.text = "You Win!";
+            heracrossModel.transform.rotation =
+                Quaternion.Slerp(heracrossModel.transform.rotation,
+                        newRotation, rotateSpeed * Time.deltaTime);
         }
-    }*/
+
+        anime.SetBool("isGrounded", controller.isGrounded);
+        anime.SetFloat("speed", absVertical + absHorizontal);
+    }
 }

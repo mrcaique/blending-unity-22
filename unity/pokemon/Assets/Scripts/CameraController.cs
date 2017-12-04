@@ -16,15 +16,17 @@ public class CameraController : MonoBehaviour {
         }
         
         pivot.transform.position = player.transform.position;
-        pivot.transform.parent = player.transform;
+        pivot.transform.parent = null;
 
         // Remove the cursor icon and lock in the center of the window
         Cursor.lockState = CursorLockMode.Locked;
     }
     
     void LateUpdate() {
+        pivot.transform.position = player.transform.position;
+
         float horizontal = Input.GetAxis("Mouse X") * rotateSpeed;
-        player.Rotate(0, horizontal, 0);
+        pivot.Rotate(0, horizontal, 0);
 
         float vertical = Input.GetAxis("Mouse Y") * rotateSpeed;
         pivot.Rotate(-vertical, 0, 0);
@@ -33,7 +35,7 @@ public class CameraController : MonoBehaviour {
             pivot.rotation = Quaternion.Euler(45f, 0f, 0f);
         }
 
-        float xAngle = player.eulerAngles.x;
+        float xAngle = pivot.eulerAngles.x;
         float yAngle = pivot.eulerAngles.y;
         Quaternion rotation = Quaternion.Euler(xAngle, yAngle, 0);
 
