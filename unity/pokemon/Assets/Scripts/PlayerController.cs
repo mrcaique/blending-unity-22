@@ -5,20 +5,23 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour {
     
-    public float moveSpeed;
-    public float jumpForce;
-    public CharacterController controller;
-    public float gravityScale;
-    public Text pokecountText;
-    public Text winText;
-    public Animator anime;
-    public Transform pivot;
-    public float rotateSpeed;
-    public GameObject heracrossModel;
+    public float moveSpeed; //!< Speed of moviment
+    public float jumpForce; //!< How much the high is the jump
+    public CharacterController controller; //!< Player's controller
+    public float gravityScale; //!< gravity force
+    public Text pokecountText; //!< Pokéballs counter
+    public Text winText; //!< "You Win!" text
+    public Animator anime; //!< Related to the animation of the player
+    public Transform pivot; //!< Camera that is child of the player
+    public float rotateSpeed; //!< speed of camera rotation
+    public GameObject heracrossModel; //!< model used for the player
 
-    private Vector3 moveDirection;
-    private int pokeballs;
+    private Vector3 moveDirection; //!< Direction of the moviment
+    private int pokeballs; //!< Number of pokéballs collected
 
+    /*!
+     * First method to be executed
+     */
     void Start() {
         controller = GetComponent<CharacterController>();
         pokeballs = 0;
@@ -26,6 +29,13 @@ public class PlayerController : MonoBehaviour {
         winText.text = "";
     }
 
+    /*!
+     * Collision detector: if the player touches a pokéball, the pokéball
+     * "vanishes" and the counter of pokéballs is increased, that is, the
+     * player collected that pokéball.
+     *
+     * @param other: Another game object that collided with the player
+     */
     void OnTriggerEnter(Collider other) {
         if (other.gameObject.CompareTag("Pick Up")) {
             other.gameObject.SetActive(false);
@@ -34,6 +44,10 @@ public class PlayerController : MonoBehaviour {
         } 
     }
     
+    /*!
+     * Updates the pokéball counter. If all pokéballs are collected, the
+     * victory message will display
+     */
     void SetPokecountText(int count) {
         pokecountText.text = "Pokéballs: " + count.ToString() + "/25";
         if (count >= 25) {
@@ -41,6 +55,9 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    /*!
+     * Runs each frame
+     */
     void Update() {
         float yStore = moveDirection.y;
         Vector3 t1 = transform.forward * Input.GetAxis("Vertical");
@@ -50,6 +67,7 @@ public class PlayerController : MonoBehaviour {
         moveDirection = moveDirection.normalized * moveSpeed;
         moveDirection.y = yStore;
 
+        // Prevents the player jumps forever (double jumps, triple jumps, etc.)
         if (controller.isGrounded) {
             moveDirection.y = 0f;
 
@@ -65,7 +83,9 @@ public class PlayerController : MonoBehaviour {
         moveDirection.y = moveDirection.y + physics;
         controller.Move(moveDirection * Time.deltaTime);
 
-        // Move player in different directions based on camera direction
+        // Move player in different directions based on camera direction,
+        // that is, if the player go to the right, the correct animation is
+        // displayed.
         if (Input.GetAxis("Horizontal") != 0 ||
             Input.GetAxis("Vertical") != 0) {
             transform.rotation = Quaternion.Euler(
@@ -80,7 +100,12 @@ public class PlayerController : MonoBehaviour {
                         newRotation, rotateSpeed * Time.deltaTime);
         }
 
+        // Set the respectives variables for the animation's finite state
         anime.SetBool("isGrounded", controller.isGrounded);
         anime.SetFloat("speed", absVertical + absHorizontal);
+
+        if (Input.GetKey("escape")) {
+            Application.Quit();
+        }
     }
 }
